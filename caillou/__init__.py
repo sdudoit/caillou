@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import click
@@ -12,27 +13,30 @@ def main():
 
 @main.command
 @click.argument("LANGUAGE")
-@click.argument("SENTENCE")
-def tr(language, sentence) -> None:
+def tr(language) -> None:
     """
-    Translate into the given language the given sentence
+    Translate into the given language
 
     \b
-    LANGUAGE     The language in which the sentence must be translated (e.g. French, English, Dutch, Italian etc.)
-    SENTENCE     The sentence to translate surrounded with quotes (e.g. "This is my sentence to translate")
+    LANGUAGE     The language in which the sentence must be translated (e.g. French, FR, Nederlands, Italiano etc.)
     """
     from langchain.chains.llm import LLMChain
     from langchain.prompts import PromptTemplate
     from langchain_openai.llms import OpenAI
 
+    print("Enter text to translate and submit with CTRL+D (or CTRL+Z on Windows) on a new line: \n> ", end="")
+    to_translate = sys.stdin.read()
+
+    print("\n--- Translating ---\n")
+
     prompt = PromptTemplate(
-        input_variables=["language", "sentence"],
-        template="Could you translate in the language {language} the following sentence: {sentence}",
+        input_variables=["language", "to_translate"],
+        template="Could you translate in the language {language} the following text: {to_translate}",
     )
     chain = LLMChain(llm=OpenAI(), prompt=prompt)
 
-    response = chain.invoke(input={"language": language, "sentence": sentence})
-    print(f"{response['text']}")
+    response = chain.invoke(input={"language": language, "to_translate": to_translate})
+    print(f"{response['text'].lstrip('\n')}")
 
 
 @main.command
