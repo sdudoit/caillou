@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import clipboard as cb
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.widgets import Button, Select, Static, TextArea
@@ -50,26 +51,34 @@ class TranslatorApp(App):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
 
-        from langchain.chains.llm import LLMChain
-        from langchain.prompts import PromptTemplate
-        from langchain_openai.llms import OpenAI
+        if event.button.id == "translate_button":
+            from langchain.chains.llm import LLMChain
+            from langchain.prompts import PromptTemplate
+            from langchain_openai.llms import OpenAI
 
-        input_text = self.query_one("#input_text", expect_type=TextArea).text
-        language = self.query_one("#language_selector", expect_type=Select).value
+            input_text = self.query_one("#input_text", expect_type=TextArea).text
+            language = self.query_one("#language_selector", expect_type=Select).value
 
-        prompt = PromptTemplate(
-            input_variables=["language", "input_text"],
-            template="Could you translate in the language {language} the following text: {input_text}",
-        )
-        chain = LLMChain(llm=OpenAI(), prompt=prompt)
+            prompt = PromptTemplate(
+                input_variables=["language", "input_text"],
+                template="Could you translate in the language {language} the following text: {input_text}",
+            )
+            chain = LLMChain(llm=OpenAI(), prompt=prompt)
 
-        response = chain.invoke(
-            input={"language": language, "input_text": input_text}
-        )
-        self.query_one("#output_text", expect_type=TextArea).clear()
-        self.query_one("#output_text", expect_type=TextArea).insert(
-            response["text"].lstrip("\n")
-        )
+            response = chain.invoke(
+                input={"language": language, "input_text": input_text}
+            )
+            self.query_one("#output_text", expect_type=TextArea).clear()
+            self.query_one("#output_text", expect_type=TextArea).insert(
+                response["text"].lstrip("\n")
+            )
+
+        if event.button.id == "copy_button":
+            cb.copy(self.query_one("#output_text", expect_type=TextArea).text)
+
+        if event.button.id == "paste_button":
+            self.query_one("#input_text", expect_type=TextArea).clear()
+            self.query_one("#input_text", expect_type=TextArea).insert(cb.paste())
 
 
 if __name__ == "__main__":
