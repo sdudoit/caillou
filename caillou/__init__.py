@@ -13,24 +13,40 @@ def main():
 
 @main.command
 @click.argument("LANGUAGE")
-@click.argument("INPUT_TEXT")
+@click.argument("INPUT_TEXT", nargs=-1)
 def tr(language, input_text) -> None:
     """
-    Translate into the given language the given input text
+    Translate a text into another language (e.g. "tr FR This is a rock-solid application")
 
     \b
-    LANGUAGE     The language in which the input text must be translated (e.g. French, FR, Nederlands, Italiano etc.)
-    INPUT_TEXT   The text to translate surrounded with quotes (e.g. "This is my text to translate")
+    LANGUAGE     The language used to translate (e.g. "French", "FR", "Nederlands", "Italiano" etc.)
+    INPUT_TEXT   The text to translate
     """
     from langchain.chains.llm import LLMChain
     from langchain.prompts import PromptTemplate
+    from langchain_community.llms.ollama import Ollama
     from langchain_openai.llms import OpenAI
 
     prompt = PromptTemplate(
         input_variables=["language", "input_text"],
-        template="Could you translate in the language {language} the following text: {input_text}",
+        # template="Could you translate in the language {language} the following text: {input_text}",
+        template="""
+            <s>[INST]
+            <<SYS>>
+                You are a translator assistant.
+                You translate any text in the language "{language}".
+                Your generated answer only contains the translation.
+            <</SYS>>
+            Text to translate is: "{input_text}"
+            [/INST]
+        """,
     )
-    chain = LLMChain(llm=OpenAI(), prompt=prompt)
+    chain = LLMChain(llm=Ollama(model="llama3"), prompt=prompt)
+
+    # prompt = PromptTemplate(
+    #     input_variables=["language", "input_text"],
+    #     template="Could you translate in the language {language} the following text: {input_text}",
+    # chain = LLMChain(llm=OpenAI(), prompt=prompt)
 
     response = chain.invoke(input={"language": language, "input_text": input_text})
     print(f"{response['text'].lstrip('\n')}")
@@ -87,12 +103,12 @@ def query(pdf_file: Path, query: str) -> None:
 
 
 @main.group
-def app() -> None:
+def roll() -> None:
     """Launch application"""
     pass
 
 
-@app.command
+@roll.command
 def translate() -> None:
     from caillou.translate.translate import TranslatorApp
 
