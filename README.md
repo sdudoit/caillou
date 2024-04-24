@@ -1,3 +1,3 @@
 # caillou
 
-AI Assistant in the Command-Line
+A little stone in my sandbox (not in my shoe)

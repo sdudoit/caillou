@@ -13,29 +13,26 @@ def main():
 
 @main.command
 @click.argument("LANGUAGE")
-def tr(language) -> None:
+@click.argument("INPUT_TEXT")
+def tr(language, input_text) -> None:
     """
-    Translate into the given language
+    Translate into the given language the given input text
 
     \b
-    LANGUAGE     The language in which the sentence must be translated (e.g. French, FR, Nederlands, Italiano etc.)
+    LANGUAGE     The language in which the input text must be translated (e.g. French, FR, Nederlands, Italiano etc.)
+    INPUT_TEXT   The text to translate surrounded with quotes (e.g. "This is my text to translate")
     """
     from langchain.chains.llm import LLMChain
     from langchain.prompts import PromptTemplate
     from langchain_openai.llms import OpenAI
 
-    print("Enter text to translate and submit with CTRL+D (or CTRL+Z on Windows) on a new line: \n> ", end="")
-    to_translate = sys.stdin.read()
-
-    print("\n--- Translating ---\n")
-
     prompt = PromptTemplate(
-        input_variables=["language", "to_translate"],
-        template="Could you translate in the language {language} the following text: {to_translate}",
+        input_variables=["language", "input_text"],
+        template="Could you translate in the language {language} the following text: {input_text}",
     )
     chain = LLMChain(llm=OpenAI(), prompt=prompt)
 
-    response = chain.invoke(input={"language": language, "to_translate": to_translate})
+    response = chain.invoke(input={"language": language, "input_text": input_text})
     print(f"{response['text'].lstrip('\n')}")
 
 
@@ -87,3 +84,17 @@ def query(pdf_file: Path, query: str) -> None:
     # Invoke with query
     response = chain.invoke(query)
     print(response["result"])
+
+
+@main.group
+def app() -> None:
+    """Launch application"""
+    pass
+
+
+@app.command
+def translate() -> None:
+    from caillou.translate.translate import TranslatorApp
+
+    app = TranslatorApp()
+    app.run()

@@ -1,0 +1,29 @@
+Screen {
+    layout: grid;
+    grid-size: 3 3;
+    grid-columns: auto 2fr auto;
+    grid-rows: 2fr auto 2fr;
+}
+
+
+#input_text {
+    column-span: 2;
+}
+
+#paste_button {
+}
+
+
+#language_selector {
+}
+
+#translate_button {
+    margin-left: 1;
+}
+
+#output_text {
+    column-span: 2;
+}
+
+#copy_button {
+}
