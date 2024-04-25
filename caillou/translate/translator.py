@@ -53,7 +53,7 @@ class TranslatorApp(App):
 
     TITLE = "Caillou Translate"
 
-    CSS_PATH = "translate.tcss"
+    CSS_PATH = "styles.tcss"
 
     def compose(self) -> ComposeResult:
         yield CustomTextArea(id="input_text")
