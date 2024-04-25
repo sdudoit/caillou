@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 
 import click
@@ -24,29 +23,13 @@ def tr(language, input_text) -> None:
     """
     from langchain.chains.llm import LLMChain
     from langchain.prompts import PromptTemplate
-    from langchain_community.llms.ollama import Ollama
     from langchain_openai.llms import OpenAI
 
     prompt = PromptTemplate(
         input_variables=["language", "input_text"],
-        # template="Could you translate in the language {language} the following text: {input_text}",
-        template="""
-            <s>[INST]
-            <<SYS>>
-                You are a translator assistant.
-                You translate any text in the language "{language}".
-                Your generated answer only contains the translation.
-            <</SYS>>
-            Text to translate is: "{input_text}"
-            [/INST]
-        """,
+        template="Could you translate in the language {language} the following text: {input_text}",
     )
-    chain = LLMChain(llm=Ollama(model="llama3"), prompt=prompt)
-
-    # prompt = PromptTemplate(
-    #     input_variables=["language", "input_text"],
-    #     template="Could you translate in the language {language} the following text: {input_text}",
-    # chain = LLMChain(llm=OpenAI(), prompt=prompt)
+    chain = LLMChain(llm=OpenAI(), prompt=prompt)
 
     response = chain.invoke(input={"language": language, "input_text": input_text})
     print(f"{response['text'].lstrip('\n')}")
