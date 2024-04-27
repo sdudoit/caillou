@@ -13,9 +13,7 @@ from textual.widgets._select import NoSelection
 
 class CustomTextArea(TextArea):
 
-    BINDINGS = [
-        Binding("ctrl+a", "select_all", "Select All", show=False, priority=True)
-    ]
+    BINDINGS = [Binding("ctrl+a", "select_all", "Select All", show=False, priority=True)]
 
 
 class LanguageSelector(Select):
@@ -93,9 +91,7 @@ class TranslatorApp(App):
             output_textarea = self.query_one("#output_text", expect_type=TextArea)
             output_textarea.clear()
             output_textarea.insert("Translating ...")
-            response = chain.invoke(
-                input={"language": language, "input_text": input_text}
-            )
+            response = chain.invoke(input={"language": language, "input_text": input_text})
             output_textarea.clear()
             output_textarea.insert(response["text"].lstrip("\n"))
 

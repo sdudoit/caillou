@@ -54,9 +54,7 @@ def tr(language, input_text) -> None:
     )
     chain = LLMChain(llm=OpenAI(), prompt=prompt)
 
-    response = chain.invoke(
-        input={"language": language, "input_text": " ".join(input_text)}
-    )
+    response = chain.invoke(input={"language": language, "input_text": " ".join(input_text)})
     print(f"{response['text'].lstrip('\n')}")
 
 
