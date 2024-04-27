@@ -1,11 +1,16 @@
 import sys
 
-from . import main
+from caillou import cli
 
-rc = 1
-try:
-    main()
-    rc = 0
-except Exception as e:
-    print("Error: %s" % e, file=sys.stderr)
-sys.exit(rc)
+
+def main() -> None:
+    rc = 1
+    try:
+        cli()
+        rc = 0
+    except Exception as e:
+        print("Error: %s" % e, file=sys.stderr)
+    sys.exit(rc)
+
+
+main()
