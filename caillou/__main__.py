@@ -4,6 +4,7 @@ from caillou import cli
 
 
 def main() -> None:
+    """Main function required for the script"""
     rc = 1
     try:
         cli()

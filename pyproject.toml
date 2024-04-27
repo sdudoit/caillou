@@ -64,6 +64,7 @@ exclude = ["docs", "tests", "examples", "tools", "build"]
 
 [tool.poetry.scripts]
 caillou = 'caillou.__main__:main'
+caillou_translator = 'caillou.apps.translator:main'
 
 [build-system]
 requires = ["poetry-core"]
