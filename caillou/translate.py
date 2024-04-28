@@ -8,9 +8,8 @@ from langchain_openai.llms import OpenAI
 
 class BaseTranslator(ABC):
     def __init__(self, llm: BaseLLM, prompt_template: str) -> None:
-        self.llm = llm
         self.chain = LLMChain(
-            llm=OpenAI(),
+            llm=llm,
             prompt=PromptTemplate(
                 input_variables=["language", "input_text"],
                 template=prompt_template,
@@ -19,6 +18,10 @@ class BaseTranslator(ABC):
 
     def translate(self, language: str, input_text: str) -> str:
         """Translate into the given language the given input text"""
+        if not language:
+            raise ValueError("Language to use for translation is empty!")
+        if not input_text:
+            raise ValueError("Input text to translate is empty!")
         return self.chain.invoke(input={"language": language, "input_text": input_text})
 
 
