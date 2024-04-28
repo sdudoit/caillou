@@ -102,7 +102,6 @@ class TranslatorApp(App):
 
 
 if __name__ == "__main__":
-
     load_config()
     translator = OpenAITranslator(api_key=os.environ["OPENAI_API_KEY"])
     app = TranslatorApp(translator)

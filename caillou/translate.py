@@ -7,7 +7,6 @@ from langchain_openai.llms import OpenAI
 
 
 class BaseTranslator(ABC):
-
     def __init__(self, llm: BaseLLM, prompt_template: str) -> None:
         self.llm = llm
         self.chain = LLMChain(
@@ -24,7 +23,6 @@ class BaseTranslator(ABC):
 
 
 class OpenAITranslator(BaseTranslator):
-
     def __init__(self, api_key: str) -> None:
         super().__init__(
             OpenAI(api_key=api_key),

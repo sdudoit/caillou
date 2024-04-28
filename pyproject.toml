@@ -21,35 +21,15 @@ clipboard = "^0.0.4"
 platformdirs = "^4.2.1"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.4.0"
-isort = "^5.13.2"
 mypy = "^1.9.0"
 ruff = "^0.4.0"
 textual-dev = "^1.5.1"
 
-[tool.black]
-line-length = 120
-exclude = '''
-/(
-    \.git
-  | \.mypy_cache
-  | build
-  | dist
-)/
-'''
-
-[tool.isort]
-profile = "black"
-force_single_line = true
-atomic = true
-lines_after_imports = 2
-lines_between_types = 1
-
 [tool.ruff]
-select = ["E", "F", "W", "Q", "I"]
-ignore = ["E203"]
-fixable = ["ALL"]
-unfixable = []
+lint.select = ["E", "F", "W", "Q", "I"]
+lint.ignore = ["E203"]
+lint.fixable = ["ALL"]
+lint.unfixable = []
 line-length = 120
 
 
@@ -64,7 +44,6 @@ exclude = ["docs", "tests", "examples", "tools", "build"]
 
 [tool.poetry.scripts]
 caillou = 'caillou.__main__:main'
-caillou_translator = 'caillou.apps.translator:main'
 
 [build-system]
 requires = ["poetry-core"]
