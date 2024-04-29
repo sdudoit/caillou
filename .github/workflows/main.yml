@@ -1,0 +1,50 @@
+name: Main branch
+
+on:
+  push:
+    branches: 
+      - main
+      - 8-add-quality-checks-on-main-branch-after-any-change
+
+jobs:
+  code_quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: pip
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Requirements
+        run: poetry install
+
+      - name: Check Code Quality
+        run: ruff check .
+
+  unit_tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: pip
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Requirements
+        run: poetry install
+
+      - name: Check Unit Tests
+        run: pytest .   
