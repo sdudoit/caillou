@@ -1,3 +1,5 @@
+![main branch](https://github.com/sdudoit/caillou/actions/workflows/main.yml/badge.svg?)
+
 # Caillou
 
 Caillou is a project to explore AI technologies (e.g. LLMs, LangChain etc.) by implementing some utilities for the terminal
