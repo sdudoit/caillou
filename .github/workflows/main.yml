@@ -1,4 +1,4 @@
-name: Main branch
+name: 
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
         run: poetry install
 
       - name: Check Code Quality
-        run: ruff check .
+        run: poetry run ruff check -n .
 
   unit_tests:
     name: Unit Tests
@@ -47,4 +47,4 @@ jobs:
         run: poetry install
 
       - name: Check Unit Tests
-        run: pytest .   
+        run: poetry run pytest -p no:cacheprovider tests/unit_tests/   
