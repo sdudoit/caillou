@@ -4,44 +4,37 @@ on:
       - main
 
 jobs:
-  code_quality:
-    name: Code Quality
-    runs-on: self-hosted
+
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: ">=3.11"
+          python-version: ">=3.11" 
           cache: pip
 
       - name: Install Poetry
         run: pip install poetry
 
-      - name: Install Requirements
+      - name: Install Requirements 
         run: poetry install
 
+  code_quality:
+    needs: setup
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
       - name: Check Code Quality
         run: poetry run ruff check -n .
 
-  unit_tests:
+  unit_tests:  
+    needs: setup
     name: Unit Tests
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ">=3.11"
-          cache: pip
-
-      - name: Install Poetry
-        run: pip install poetry
-
-      - name: Install Requirements
-        run: poetry install
-
+    runs-on: ubuntu-latest 
+    steps:    
       - name: Check Unit Tests
-        run: poetry run pytest -p no:cacheprovider tests/unit_tests/   
+        run: poetry run pytest -p no:cacheprovider tests/unit_tests/
