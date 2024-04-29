@@ -35,7 +35,8 @@ def translate(language, input_text) -> None:
 
     translator = OpenAITranslator(api_key=os.environ["OPENAI_API_KEY"])
     response = translator.translate(language, " ".join(input_text))
-    print(f"{response['text'].lstrip('\n')}")
+    response = response["text"].lstrip("\n")
+    print(response)
 
 
 @cli.command
