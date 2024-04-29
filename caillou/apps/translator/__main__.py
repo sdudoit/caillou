@@ -12,7 +12,7 @@ from textual.widgets import Button, Footer, Select, Static, TextArea
 from textual.widgets._select import NoSelection
 
 from caillou.config import load_config
-from caillou.translate import BaseTranslator, OpenAITranslator
+from caillou.translate import OpenAITranslator
 
 
 class CustomTextArea(TextArea):
@@ -57,7 +57,7 @@ class TranslatorApp(App):
 
     CSS_PATH = "styles.tcss"
 
-    def __init__(self, translator: BaseTranslator):
+    def __init__(self, translator: OpenAITranslator):
         super().__init__()
         self.translator = translator
 
@@ -101,8 +101,12 @@ class TranslatorApp(App):
         input_textarea.insert(cb.paste())
 
 
-if __name__ == "__main__":
+def main() -> None:
     load_config()
     translator = OpenAITranslator(api_key=os.environ["OPENAI_API_KEY"])
     app = TranslatorApp(translator)
     app.run()
+
+
+if __name__ == "__main__":
+    main()
