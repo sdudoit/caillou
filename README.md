@@ -1,4 +1,4 @@
-![main branch](https://github.com/sdudoit/caillou/actions/workflows/main.yml/badge.svg?)
+[![main](https://github.com/sdudoit/caillou/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/sdudoit/caillou/actions/workflows/main.yml)
 
 # Caillou
 
