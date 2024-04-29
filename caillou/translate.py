@@ -1,18 +1,17 @@
-from abc import ABC
-
 from langchain.chains.llm import LLMChain
 from langchain.prompts import PromptTemplate
-from langchain_core.language_models import BaseLLM
 from langchain_openai.llms import OpenAI
 
 
-class BaseTranslator(ABC):
-    def __init__(self, llm: BaseLLM, prompt_template: str) -> None:
+class OpenAITranslator:
+    """Translator using the OpenAI API"""
+
+    def __init__(self, api_key: str) -> None:
         self.chain = LLMChain(
-            llm=llm,
+            llm=OpenAI(api_key=api_key),
             prompt=PromptTemplate(
                 input_variables=["language", "input_text"],
-                template=prompt_template,
+                template="Could you translate in the language {language} the following text: {input_text}",
             ),
         )
 
@@ -23,11 +22,3 @@ class BaseTranslator(ABC):
         if not input_text:
             raise ValueError("Input text to translate is empty!")
         return self.chain.invoke(input={"language": language, "input_text": input_text})
-
-
-class OpenAITranslator(BaseTranslator):
-    def __init__(self, api_key: str) -> None:
-        super().__init__(
-            OpenAI(api_key=api_key),
-            prompt_template="Could you translate in the language {language} the following text: {input_text}",
-        )
