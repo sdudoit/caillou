@@ -1,10 +1,7 @@
-name: 
-
 on:
   push:
     branches: 
       - main
-      - 8-add-quality-checks-on-main-branch-after-any-change
 
 jobs:
   code_quality:
