@@ -1,0 +1,47 @@
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  code_quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: pip
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Requirements
+        run: poetry install
+
+      - name: Check Code Quality
+        run: poetry run ruff check -n .
+
+  unit_tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          cache: pip
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Requirements
+        run: poetry install
+
+      - name: Check Unit Tests
+        run: poetry run pytest -p no:cacheprovider tests/unit_tests/   
