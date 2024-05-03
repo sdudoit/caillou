@@ -23,20 +23,28 @@ def version():
 @click.argument("INPUT_TEXT", nargs=-1)
 def translate(language, input_text) -> None:
     """
-    Translate a text into another language (e.g. "tr FR This is a rock-solid application")
+    Translate a text into another language
 
     \b
     LANGUAGE     The language used to translate (e.g. "French", "FR", "Nederlands", "Italiano" etc.)
     INPUT_TEXT   The text to translate
     """
-    from caillou.translate import OpenAITranslator
 
-    load_config()
+    from caillou.translate import TranslatorFactory
 
-    translator = OpenAITranslator(api_key=os.environ["OPENAI_API_KEY"])
+    # Load config
+    config = load_config()
+
+    # Create the appropriate Translator according to config
+    translator = TranslatorFactory.create(config)
+
+    # Use Translator to translate inputs
     response = translator.translate(language, " ".join(input_text))
     response = response["text"].lstrip("\n")
     print(response)
+
+    # Add Footer
+    print(f'\n(Generated with LLM: {translator.config["model"]})')
 
 
 @cli.command
