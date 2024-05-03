@@ -1,18 +1,17 @@
 from __future__ import annotations
 
 import json
-import os
 from importlib import resources as impresources
 from typing import Any
 
 import clipboard as cb
 from textual.app import App, ComposeResult, on
 from textual.binding import Binding
-from textual.widgets import Button, Footer, Select, Static, TextArea
+from textual.widgets import Button, Footer, Header, Select, Static, TextArea
 from textual.widgets._select import NoSelection
 
 from caillou.config import load_config
-from caillou.translate import OpenAITranslator
+from caillou.translate import Translator
 
 
 class CustomTextArea(TextArea):
@@ -57,12 +56,14 @@ class TranslatorApp(App):
 
     CSS_PATH = "styles.tcss"
 
-    def __init__(self, translator: OpenAITranslator):
+    def __init__(self, translator: Translator):
         super().__init__()
         self.translator = translator
+        self.title = f"TranslatorApp using LLM: {self.translator.llm_id}"
 
     def compose(self) -> ComposeResult:
         """Compose the UI"""
+        yield Header()
         yield CustomTextArea(id="input_text")
         yield Button(id="paste_button", label="<< Paste", variant="default")
         yield Button(id="translate_button", label="Translate to", variant="primary")
@@ -102,9 +103,8 @@ class TranslatorApp(App):
 
 
 def main() -> None:
-    load_config()
-    translator = OpenAITranslator(api_key=os.environ["OPENAI_API_KEY"])
-    app = TranslatorApp(translator)
+    config = load_config()
+    app = TranslatorApp(Translator(config))
     app.run()
 
 

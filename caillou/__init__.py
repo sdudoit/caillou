@@ -1,5 +1,3 @@
-import os
-
 import click
 
 from caillou.config import load_config
@@ -30,13 +28,13 @@ def translate(language, input_text) -> None:
     INPUT_TEXT   The text to translate
     """
 
-    from caillou.translate import TranslatorFactory
+    from caillou.translate import Translator
 
     # Load config
     config = load_config()
 
     # Create the appropriate Translator according to config
-    translator = TranslatorFactory.create(config)
+    translator = Translator(config)
 
     # Use Translator to translate inputs
     response = translator.translate(language, " ".join(input_text))
@@ -44,7 +42,7 @@ def translate(language, input_text) -> None:
     print(response)
 
     # Add Footer
-    print(f'\n(Generated with LLM: {translator.config["model"]})')
+    print(f"\n(Generated with LLM: {translator.llm_id})")
 
 
 @cli.command

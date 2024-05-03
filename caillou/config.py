@@ -10,7 +10,7 @@ CONFIG_INITIAL_CONTENT = """
 {
     "llms": {
         "openai-gpt-3.5-turbo": {
-            "type": "openai",
+            "type": "langchain_openai.llms.OpenAI",
             "config": {
                 "api_key": "os.environ['OPENAI_API_KEY']",
                 "model": "gpt-3.5-turbo-instruct",
@@ -18,15 +18,17 @@ CONFIG_INITIAL_CONTENT = """
             }
         },
         "ollama-llama2": {
-            "type": "ollama-llm",
+            "type": "langchain_community.llms.ollama.Ollama",
             "config": {
-                "model": "llama2"
+                "model": "llama2",
+                "temperature": 0.0
             }
         },
         "ollama-llama3": {
-            "type": "ollama-llm",
+            "type": "langchain_community.llms.ollama.Ollama",
             "config": {
-                "model": "llama3"
+                "model": "llama3",
+                "temperature": 0.0
             }
         }
     },
@@ -56,5 +58,6 @@ def load_config() -> dict:
         if USE_OPENAI_API_KEY_ENV in content:
             import os
 
+            assert "OPENAI_API_KEY" in os.environ, "Expected environment variable OPENAI_API_KEY not found!"
             content = content.replace(USE_OPENAI_API_KEY_ENV, os.environ["OPENAI_API_KEY"])
         return json.loads(content)
