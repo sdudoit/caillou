@@ -38,7 +38,6 @@ def translate(language: str, input_text: tuple | str) -> None:
 
     # Use Translator to translate inputs
     response = translator.translate(language, " ".join(input_text))
-    response = response["text"].lstrip("\n")
     print(response)
 
     # Add Footer

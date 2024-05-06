@@ -1,7 +1,6 @@
 from importlib import import_module
-from typing import Any, Dict
+from typing import Any
 
-from langchain.chains.llm import LLMChain
 from langchain.prompts import PromptTemplate
 
 INPUTS = ["language", "input_text"]
@@ -32,18 +31,16 @@ class Translator:
         self.llm_config = config["llms"][self.llm_id]
         llm_class = get_llm_class(self.llm_config["type"])
 
-        self.chain = LLMChain(
-            llm=llm_class(**self.llm_config["config"]),
-            prompt=PromptTemplate(
-                input_variables=INPUTS,
-                template=PROMPT_TEMPLATE,
-            ),
-        )
+        prompt = PromptTemplate(input_variables=INPUTS, template=PROMPT_TEMPLATE)
+        llm = llm_class(**self.llm_config["config"])
 
-    def translate(self, language: str, input_text: str) -> Dict[str, Any]:
+        self.chain = prompt | llm
+
+    def translate(self, language: str, input_text: str) -> str:
         """Translate into the given language the given input text"""
         if not language:
             raise ValueError("Language to use for translation is empty!")
         if not input_text:
             raise ValueError("Input text to translate is empty!")
-        return self.chain.invoke(input={"language": language, "input_text": input_text})
+        response = str(self.chain.invoke(input={"language": language, "input_text": input_text}))
+        return response.lstrip("\n")
