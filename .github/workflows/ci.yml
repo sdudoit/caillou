@@ -11,7 +11,7 @@ on:
 jobs:
 
   code_quality:
-    name: code quality checks
+    name: code quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
