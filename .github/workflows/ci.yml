@@ -53,20 +53,15 @@ jobs:
         run: poetry install    
 
       - name: Check Unit Tests
-        run: poetry run pytest --doctest-modules --junitxml=junit/test-results.xml --cov=caillou --cov-report=xml --cov-report=html tests/unit_tests/
+        run: poetry run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=caillou tests/unit_tests/ | tee pytest-coverage.txt
 
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+      - name: Add Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
         if: always()
         with:
-          files: |
-            junit/test-results.xml
-
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit_tests-coverage-report
-          path: htmlcov/**
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
+          
 
   build:
     name: build
