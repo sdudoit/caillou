@@ -89,7 +89,7 @@ class TranslatorApp(App):
             response = self.translator.translate(str(language), input_text)
             output_textarea = self.query_one("#output_text", expect_type=TextArea)
             output_textarea.clear()
-            output_textarea.insert(response["text"].lstrip("\n"))
+            output_textarea.insert(response)
 
     @on(Button.Pressed, "#copy_button")
     def copy(self) -> None:
