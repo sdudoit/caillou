@@ -11,7 +11,7 @@ on:
 jobs:
 
   code_quality:
-    name: Linting, Formatting & Type Hinting
+    name: code quality checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +34,9 @@ jobs:
         run: poetry run mypy caillou/
 
   unit_tests:
-    name: Unit tests
+    name: unit tests
+    needs:
+      - code_quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
