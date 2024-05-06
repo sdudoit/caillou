@@ -1,5 +1,5 @@
 from importlib import import_module
-from typing import Any
+from typing import Any, Dict
 
 from langchain.chains.llm import LLMChain
 from langchain.prompts import PromptTemplate
@@ -40,7 +40,7 @@ class Translator:
             ),
         )
 
-    def translate(self, language: str, input_text: str) -> str:
+    def translate(self, language: str, input_text: str) -> Dict[str, Any]:
         """Translate into the given language the given input text"""
         if not language:
             raise ValueError("Language to use for translation is empty!")

@@ -4,22 +4,22 @@ from caillou.config import load_config
 
 
 @click.group
-def cli():
+def cli() -> None:
     """AI Assistant in the Command-Line"""
 
 
 @cli.command
-def version():
+def version() -> None:
     """Print current version of the application"""
     import importlib.metadata
 
-    print(importlib.metadata.version(__package__))
+    print(importlib.metadata.version(str(__package__)))
 
 
 @cli.command
 @click.argument("LANGUAGE")
 @click.argument("INPUT_TEXT", nargs=-1)
-def translate(language, input_text) -> None:
+def translate(language: str, input_text: tuple | str) -> None:
     """
     Translate a text into another language
 
@@ -47,7 +47,7 @@ def translate(language, input_text) -> None:
 
 @cli.command
 @click.argument("APPLICATION", nargs=1, required=False)
-def launch(application) -> None:
+def launch(application: str) -> None:
     """
     Launch an application with the given name or list the available applications if no name is provided
 

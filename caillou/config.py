@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from platformdirs import user_config_path
 
@@ -41,7 +42,7 @@ CONFIG_INITIAL_CONTENT = """
 """
 
 
-def load_config() -> dict:
+def load_config() -> Any:
     """Load an existing configuration or create one if not exists"""
     config_dir = user_config_path(__package__)
     if not config_dir.exists():

@@ -20,7 +20,7 @@ class CustomTextArea(TextArea):
     BINDINGS = [Binding("ctrl+a", "select_all", "Select All", show=False, priority=True)]
 
 
-class LanguageSelector(Select):
+class LanguageSelector(Select["str"]):
     """Custom Select for languages"""
 
     def __init__(
@@ -35,7 +35,7 @@ class LanguageSelector(Select):
         disabled: bool = False,
     ):
         languages_file = impresources.files(__package__) / "languages.json"
-        with languages_file.open("rt") as f:
+        with languages_file.open() as f:
             doc = json.load(f)
 
         languages = [(x["name"], x["name"]) for x in doc.values()]
@@ -86,7 +86,7 @@ class TranslatorApp(App):
         language = self.query_one("#language_selector", expect_type=Select).value
         input_text = self.query_one("#input_text", expect_type=TextArea).text
         if input_text.strip() and language:
-            response = self.translator.translate(language, input_text)
+            response = self.translator.translate(str(language), input_text)
             output_textarea = self.query_one("#output_text", expect_type=TextArea)
             output_textarea.clear()
             output_textarea.insert(response["text"].lstrip("\n"))
