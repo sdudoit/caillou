@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+
+  code_quality:
+    name: Linting, Formatting & Type Hinting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ">=3.11" 
+          cache: poetry
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Dependencies
+        run: poetry install
+
+      - name: Check Linting & Formatting
+        run: poetry run ruff check -n caillou/
+
+      - name: Check Type Hinting
+        run: poetry run mypy caillou/
+
+  unit_tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ">=3.11" 
+          cache: poetry
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Dependencies
+        run: poetry install    
+
+      - name: Check Unit Tests
+        run: poetry run pytest -p no:cacheprovider tests/unit_tests/
