@@ -8,6 +8,11 @@ on:
     branches: 
       - main
 
+permissions:
+  contents: write
+  checks: write
+  pull-requests: write
+  
 jobs:
 
   code_quality:
@@ -28,7 +33,7 @@ jobs:
         run: poetry install
 
       - name: Check Linting & Formatting
-        run: poetry run ruff check -n caillou/
+        run: poetry run ruff check -n --output-format=github caillou/
 
       - name: Check Type Hinting
         run: poetry run mypy caillou/
@@ -53,8 +58,15 @@ jobs:
         run: poetry install    
 
       - name: Check Unit Tests
-        run: poetry run pytest -p no:cacheprovider tests/unit_tests/
+        run: poetry run pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=caillou tests/unit_tests/ | tee pytest-coverage.txt
 
+      - name: Add Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        if: always()
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
+          
 
   build:
     name: build
