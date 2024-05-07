@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "caillou"
-version = "0.0.1"
+version = "0.0.0"
 description = "AI-powered toolbox for the terminal"
 authors = ["Sylvain <sdudoit@proton.me>"]
 license = "GPLv3"
@@ -52,3 +52,7 @@ caillou = 'caillou.__main__:main'
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
