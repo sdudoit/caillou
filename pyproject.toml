@@ -57,3 +57,4 @@ enable = true
 vcs = "git"
 style = "semver"
 format = "{base}"
+latest-tag = true
