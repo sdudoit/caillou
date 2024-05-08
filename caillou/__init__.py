@@ -46,9 +46,9 @@ def translate(language: str, input_text: tuple | str) -> None:
 
 @cli.command
 @click.argument("APPLICATION", nargs=1, required=False)
-def launch(application: str) -> None:
+def roll(application: str) -> None:
     """
-    Launch an application with the given name or list the available applications if no name is provided
+    Launch an application or list available applications
 
     \b
     APPLICATION     The name of the application to launch
