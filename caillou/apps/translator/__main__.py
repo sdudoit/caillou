@@ -4,7 +4,7 @@ import json
 from importlib import resources as impresources
 from typing import Any
 
-import clipboard as cb
+import pyperclip
 from textual.app import App, ComposeResult, on
 from textual.binding import Binding
 from textual.widgets import Button, Footer, Header, Select, Static, TextArea
@@ -93,13 +93,13 @@ class TranslatorApp(App):
 
     @on(Button.Pressed, "#copy_button")
     def copy(self) -> None:
-        cb.copy(self.query_one("#output_text", expect_type=TextArea).text)
+        pyperclip.copy(self.query_one("#output_text", expect_type=TextArea).text)
 
     @on(Button.Pressed, "#paste_button")
     def paste(self) -> None:
         input_textarea = self.query_one("#input_text", expect_type=TextArea)
         input_textarea.clear()
-        input_textarea.insert(cb.paste())
+        input_textarea.insert(pyperclip.paste())
 
 
 def main() -> None:
