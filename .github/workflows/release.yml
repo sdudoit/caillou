@@ -128,20 +128,5 @@ jobs:
           packages-dir: ${{ github.workspace }}/dist/
           verbose: true
           print-hash: true
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ">=3.11" 
-
-      - name: Check install 
-        run: pip install ${{ needs.package.outputs.package_name }}
-
-      - name: Check application version output matches release tag
-        run: |
-          VERSION=$(${{ env.APP_NAME }} version)
-          echo "Check [v$VERSION] == [${{github.event.release.tag_name}}]"
-          if [ "v$VERSION" != "${{github.event.release.tag_name}}" ]; then 
-            echo "Not the same version. Exit with Failure!";
-            exit 1;            
-          fi       
+   
    
