@@ -1,0 +1,121 @@
+name: release 
+run-name: Release ${{ github.event.release.tag_name }} created by @${{ github.triggering_actor }}
+
+on:
+  release:
+    types: [published]
+  
+env:
+  ARTIFACT: "${{ github.event.repository.name }}-${{ github.event.release.tag_name }}"
+  APP_NAME: caillou
+
+jobs:
+
+  package:
+    runs-on: ubuntu-latest
+    outputs:
+      package_name: ${{ steps.extract-package-infos.outputs.package_name }}
+      version: ${{ steps.extract-package-infos.outputs.version }}
+      dist_file: ${{ steps.extract-package-infos.outputs.dist_file }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - name: Install poetry plugins
+        run: pipx inject poetry "poetry-dynamic-versioning[plugin]"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ">=3.11" 
+          cache: poetry
+
+      - name: Build package
+        run: poetry build --format wheel
+
+      - name: Extract package name and version
+        id: extract-package-infos
+        run: |
+          package_name=$(poetry version | cut -d ' ' -f 1)
+          version=$(poetry version --short)
+          echo package_name="${package_name}" >> $GITHUB_OUTPUT
+          echo version="${version}" >> $GITHUB_OUTPUT
+          echo dist_file="${package_name}-${version}-py3-none-any.whl" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: dist/
+          if-no-files-found: error
+
+        
+  check_version:
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: ${{ github.workspace }}/dist/
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ">=3.11" 
+
+      - name: Install package 
+        run: pip install dist/${{ needs.package.outputs.dist_file }}
+
+      - name: Check package version matches release tag
+        run: |
+          echo "Check [v${{ needs.package.outputs.version }}] == [${{github.event.release.tag_name}}]"
+          if [ "v${{ needs.package.outputs.version }}" != "${{github.event.release.tag_name}}" ]; then 
+            echo "Not the same version. Exit with Failure!";
+            exit 1;
+          fi
+
+      - name: Check application version output matches release tag
+        run: |
+          VERSION=$(${{ env.APP_NAME }} version)
+          echo "Check [v$VERSION] == [${{github.event.release.tag_name}}]"
+          if [ "v$VERSION" != "${{github.event.release.tag_name}}" ]; then 
+            echo "Not the same version. Exit with Failure!";
+            exit 1;
+          fi
+
+  test-pypi-publish:
+    needs:
+      - package    
+    runs-on: ubuntu-latest    
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT }}
+          path: ${{ github.workspace }}/dist/
+
+      - name: Publish to test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ${{ github.workspace }}/dist/
+          verbose: true
+          print-hash: true
+          repository-url: https://test.pypi.org/legacy/    
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ">=3.11" 
+
+      - name: Check install via Test PyPi
+        run: pip install ${{ needs.package.outputs.package_name }}
+
+      - name: Check application version output matches release tag
+        run: |
+          VERSION=$(${{ env.APP_NAME }} version)
+          echo "Check [v$VERSION] == [${{github.event.release.tag_name}}]"
+          if [ "v$VERSION" != "${{github.event.release.tag_name}}" ]; then 
+            echo "Not the same version. Exit with Failure!";
+            exit 1;
+          fi
