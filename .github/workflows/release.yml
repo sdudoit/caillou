@@ -109,7 +109,7 @@ jobs:
           python-version: ">=3.11" 
 
       - name: Check install via Test PyPi
-        run: pip install ${{ needs.package.outputs.package_name }}
+        run: pip install -i https://test.pypi.org/simple/ ${{ needs.package.outputs.package_name }}
 
       - name: Check application version output matches release tag
         run: |
