@@ -45,6 +45,54 @@ def translate(language: str, input_text: tuple | str) -> None:
 
 
 @cli.command
+@click.argument("QUESTION", nargs=1)
+def query(question: str) -> None:
+    """
+    Query some information from a Database using natural language
+
+    \b
+    QUESTION    The question in natural language
+    """
+    from operator import itemgetter
+
+    from langchain.chains import create_sql_query_chain
+    from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
+    from langchain_community.utilities.sql_database import SQLDatabase
+    from langchain_core.output_parsers import StrOutputParser
+    from langchain_core.prompts import PromptTemplate
+    from langchain_core.runnables import RunnablePassthrough
+    from langchain_openai.chat_models import ChatOpenAI
+
+    connection_string = "postgresql://postgres:mypassword@localhost/dvdrental"
+
+    db = SQLDatabase.from_uri(connection_string)
+
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
+    query_gen_chain = create_sql_query_chain(llm, db)
+
+    query_exec_tool = QuerySQLDataBaseTool(db=db)
+
+    answer_prompt = PromptTemplate.from_template(
+        """Given the following user question, corresponding SQL query, and SQL result, answer the user question.
+
+           Question: {question}
+           SQL Query: {query}
+           SQL Result: {result}
+           Answer: """
+    )
+
+    rephrase_answer = answer_prompt | llm | StrOutputParser()
+
+    chain = (
+        RunnablePassthrough.assign(query=query_gen_chain).assign(result=itemgetter("query") | query_exec_tool)
+        | rephrase_answer
+    )
+
+    response = chain.invoke({"question": question})
+    print(response)
+
+
+@cli.command
 @click.argument("APPLICATION", nargs=1, required=False)
 def roll(application: str) -> None:
     """
