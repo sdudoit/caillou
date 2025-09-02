@@ -18,7 +18,7 @@ jobs:
       version: ${{ steps.extract-package-infos.outputs.version }}
       dist_file: ${{ steps.extract-package-infos.outputs.dist_file }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install poetry
         run: pipx install poetry
