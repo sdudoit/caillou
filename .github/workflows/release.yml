@@ -26,7 +26,7 @@ jobs:
       - name: Install poetry plugins
         run: pipx inject poetry "poetry-dynamic-versioning[plugin]"
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ">=3.11" 
           cache: poetry
@@ -59,7 +59,7 @@ jobs:
           name: ${{ env.ARTIFACT }}
           path: ${{ github.workspace }}/dist/
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ">=3.11" 
 
@@ -103,7 +103,7 @@ jobs:
           print-hash: true
           repository-url: https://test.pypi.org/legacy/    
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ">=3.11" 
 
