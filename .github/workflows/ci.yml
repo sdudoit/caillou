@@ -19,7 +19,7 @@ jobs:
     name: code quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install poetry
         run: pipx install poetry
@@ -44,7 +44,7 @@ jobs:
       - code_quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install poetry
         run: pipx install poetry
@@ -74,7 +74,7 @@ jobs:
       - unit_tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install poetry
         run: pipx install poetry
