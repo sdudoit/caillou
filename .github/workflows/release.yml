@@ -43,7 +43,7 @@ jobs:
           echo version="${version}" >> $GITHUB_OUTPUT
           echo dist_file="${package_name}-${version}-py3-none-any.whl" >> $GITHUB_OUTPUT
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ env.ARTIFACT }}
           path: dist/
